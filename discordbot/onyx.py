@@ -1,3 +1,5 @@
+#start
+
 import discord 
 
 client = discord.Client()
@@ -18,3 +20,5 @@ async def on_ready():
         print("Channel not found")
 
 client.run('bot token')
+
+#end
