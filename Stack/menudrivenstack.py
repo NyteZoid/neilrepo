@@ -18,14 +18,17 @@ def pushStack():
                 print("Invalid choice")
             stack.append(x)
             print("Value pushed succesfully")
+            showStack()
         elif n == 2:
             x = eval(input("Enter list to be pushed: "))
             stack.append(x)
             print("List pushed succesfully")
+            showStack()
         elif n == 3:
             x = eval(input("Enter dictionary to be pushed: "))
             stack.append(x)
             print("Dictionary pushed succesfully")
+            showStack()
         else:
             print("Invalid choice")
         b = int(input("Do you wish to push any more elements? Press 1 for yes, 2 for no: "))
@@ -36,11 +39,15 @@ def pushStack():
 def popStack():
     def popElem():
         n = int(input("How many elements do you wish to pop from the stack: "))
-        for x in range(n):
-            if len(stack) > 0:
-                print(stack.pop(),"has been popped")
-            else:
-                print("Stack empty")
+        if len(stack) > 0:
+            for x in range(n):
+                if len(stack) > 0:
+                    print(stack.pop(),"has been popped")
+                else:
+                    print("Stack empty")
+                    break
+        else:
+            print("Stack empty")
         showStack()
         b = int(input("Do you wish to pop any more elements? Press 1 for yes, 2 for no: "))
         if b == 1:
