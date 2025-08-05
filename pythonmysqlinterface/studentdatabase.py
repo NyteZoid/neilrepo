@@ -42,14 +42,16 @@ def insTab():
 def delTab():
     def delRec():
         d = int(input("Enter id of the student whose record you wish to delete: "))
-        sql = "DELETE FROM STUDENT WHERE id = %s"
-        val = (d,)
-        mycursor.execute(sql,val)
-        myconn.commit()
-        showTab()
-        b = int(input("Do you wish to delete any more records? Press 1 for yes, 2 for no: "))
-        if b == 1:
-            delRec()
+        stp = input("Press enter to confirm: ")
+        if stp == "":
+            sql = "DELETE FROM STUDENTS WHERE id = %s"
+            val = (d,)
+            mycursor.execute(sql,val)
+            myconn.commit()
+            showTab()
+            b = int(input("Do you wish to delete any more records? Press 1 for yes, 2 for no: "))
+            if b == 1:
+                delRec()
     delRec()
 
 def updTab():
@@ -98,3 +100,4 @@ while True:
         print("Invalid choice")
 
 #end
+
