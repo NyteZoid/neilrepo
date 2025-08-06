@@ -16,7 +16,7 @@ else:
 mycursor = myconn.cursor()
 
 def showTab():
-    mycursor.execute("SELECT * FROM STUDENT")
+    mycursor.execute("SELECT * FROM student")
     data = mycursor.fetchall()
     count = mycursor.rowcount
     print("total no. of rows:",count)
@@ -25,7 +25,7 @@ def showTab():
 
 def insTab():
     def newRec():
-        sql = "INSERT INTO STUDENT (id,name,stream,marks) VALUES (%s,%s,%s,%s)"
+        sql = "INSERT INTO student (id,name,stream,marks) VALUES (%s,%s,%s,%s)"
         i = int(input("Enter student id: "))
         nm = input("Enter student name: ")
         st = input("Enter stream: ")
@@ -44,7 +44,7 @@ def delTab():
         d = int(input("Enter id of the student whose record you wish to delete: "))
         stp = input("Press enter to confirm: ")
         if stp == "":
-            sql = "DELETE FROM STUDENTS WHERE id = %s"
+            sql = "DELETE FROM student WHERE id = %s"
             val = (d,)
             mycursor.execute(sql,val)
             myconn.commit()
@@ -100,4 +100,5 @@ while True:
         print("Invalid choice")
 
 #end
+
 
