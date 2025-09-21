@@ -2,7 +2,6 @@
 
 from tkinter import *
 from tkinter import messagebox
-import mysql.connector
 
 def LoginForm():
     Myform = Tk()
@@ -34,3 +33,4 @@ LoginForm()
 
 
 #end
+
