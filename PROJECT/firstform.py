@@ -21,7 +21,7 @@ def LoginForm():
     def CLEAR():
         v1.set('')
         v2.set('')
-    Button(Myform,text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray26", fg = "white", padx = 15).place(x=152, y=220)
+    Button(Myform, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray26", fg = "white", padx = 15).place(x=152, y=220)
     def VALIDATE():
         if v1.get() == "abhiraj" and v2.get() == "1809":
             messagebox.showinfo("Login Success", "You are a valid user")
@@ -31,5 +31,6 @@ def LoginForm():
     Myform.mainloop()
 
 LoginForm()
+
 
 #end
