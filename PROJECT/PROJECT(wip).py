@@ -120,7 +120,10 @@ def UpdateForm():
         for x in L:
             H.append(str(x[0]))
         if n.get() in H:
-            cur.execute(f"UPDATE DATA SET {col.get()} = {uv.get()} WHERE roll = {n.get()};")
+            if col.get().lower() in ['name','section','house']:
+                cur.execute(f"UPDATE DATA SET {col.get()} = '{(uv.get())}' WHERE roll = {n.get()};")
+            else:
+                cur.execute(f"UPDATE DATA SET {col.get()} = {(uv.get())} WHERE roll = {n.get()};")
             myconn.commit()
             messagebox.showinfo("Success", "Record Updated")
             Upd.destroy()
