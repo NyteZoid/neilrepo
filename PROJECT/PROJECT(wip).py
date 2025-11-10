@@ -1,5 +1,4 @@
 #start
-#work in progress
 
 
 
@@ -19,6 +18,16 @@ cur = myconn.cursor()
 cur.execute("CREATE DATABASE IF NOT EXISTS SDBMS;")
 cur.execute("USE SDBMS;")
 cur.execute("CREATE TABLE IF NOT EXISTS DATA(roll INT PRIMARY KEY, name VARCHAR(30), class INT, section CHAR(1), house VARCHAR(7));")
+
+
+
+def SearchForm():
+    Ser = Tk()
+    Ser.geometry('500x300')
+    Ser.configure(bg = 'cornflower blue')
+    Ser.title('Update Record')
+    Ser.resizable(False, False)
+    
 
 
 
@@ -226,7 +235,7 @@ def NewForm():
 
 def MenuForm():
     Menu = Tk()
-    Menu.geometry('500x400')
+    Menu.geometry('500x500')
     Menu.configure(bg = 'cornflower blue')
     Menu.title('Main Menu')
     Menu.resizable(False,False)
@@ -245,11 +254,16 @@ def MenuForm():
     def Delete():
         Menu.destroy()
         DeleteForm()
+    def Search():
+        Menu.destroy()
+        SearchForm()
 
     Button(Menu, text = "NEW", command = New, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 30).place(x=90, y=180)
     Button(Menu, text = "DISPLAY", command = Display, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=290, y=180)
     Button(Menu, text = "UPDATE", command = Update, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=90, y=280)
     Button(Menu, text = "DELETE", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=290, y=280)
+    Button(Menu, text = "SEARCH", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=90, y=380)
+    Button(Menu, text = "EXIT", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=290, y=380)
     
 
 def LoginForm():
@@ -311,4 +325,3 @@ Main()
 
 
 #end
-
