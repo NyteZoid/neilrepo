@@ -27,6 +27,56 @@ def SearchForm():
     Ser.configure(bg = 'cornflower blue')
     Ser.title('Update Record')
     Ser.resizable(False, False)
+
+    Label(Ser, text = 'SEARCH RECORD', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=90, y=20)
+
+    Label(Ser, text = 'Roll Number', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=80, y=100)
+    n = StringVar()
+    T1 = Entry(Ser, fg = "black", bg = "white", textvariable = n, width = 10, font = ('bahnschrift semibold', 9)).place(x=340, y=113)
+
+    def VALIDATE():
+        cur.execute("SELECT roll FROM DATA;")
+        L = cur.fetchall()
+        H = []
+        for x in L:
+            H.append(str(x[0]))
+        if n.get() in H:
+            style = ttk.Style()
+            style.theme_use('clam')
+            style.configure("Treeview", background = "white", foreground = "black", rowheight = 25, fieldbackground = "white")
+            style.map('Treeview', background = [('selected', 'cornflower blue')])
+
+            tree = ttk.Treeview(Ser, columns = ("roll", "name", "class", "section", "house"), show = 'headings', height = 1)
+
+            tree.heading("roll", text = "Roll No")
+            tree.heading("name", text = "Name")
+            tree.heading("class", text = "Class")
+            tree.heading("section", text = "Section")
+            tree.heading("house", text = "House")
+
+            tree.column("roll", anchor = CENTER, width = 70)
+            tree.column("name", anchor = W, width = 145)
+            tree.column("class", anchor = CENTER, width = 70)
+            tree.column("section", anchor = CENTER, width = 70)
+            tree.column("house", anchor = CENTER, width = 95)
+
+            cur.execute(f"SELECT * FROM DATA WHERE roll = {n.get()};")
+            row = cur.fetchone()
+            tree.insert('', 'end', values = row)
+
+            tree.place(x=20, y=150)
+        else:
+            messagebox.showinfo("Failed", "Invalid Roll Number")
+    Button(Ser, text = "Enter", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=325, y=220)
+
+    def BACK():
+        Ser.destroy()
+        MenuForm()
+    Button(Ser, text = "Back", command = BACK, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=60, y=220)
+
+    def CLEAR():
+        n.set('')
+    Button(Ser, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=192.5, y=220)
     
 
 
@@ -257,13 +307,15 @@ def MenuForm():
     def Search():
         Menu.destroy()
         SearchForm()
+    def Exit():
+        Menu.destroy()
 
     Button(Menu, text = "NEW", command = New, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 30).place(x=90, y=180)
     Button(Menu, text = "DISPLAY", command = Display, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=290, y=180)
     Button(Menu, text = "UPDATE", command = Update, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=90, y=280)
     Button(Menu, text = "DELETE", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=290, y=280)
-    Button(Menu, text = "SEARCH", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=90, y=380)
-    Button(Menu, text = "EXIT", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=290, y=380)
+    Button(Menu, text = "SEARCH", command = Search, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=90, y=380)
+    Button(Menu, text = "EXIT", command = Exit, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 35).place(x=290, y=380)
     
 
 def LoginForm():
