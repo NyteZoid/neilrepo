@@ -1,0 +1,312 @@
+#start
+
+
+
+from tkinter import *
+from tkinter import messagebox
+from tkinter import ttk
+import mysql.connector as sqlconn
+
+
+
+myconn = sqlconn.connect(
+    host = "localhost",
+    user = "root",
+    password = "1809")
+
+cur = myconn.cursor()
+cur.execute("CREATE DATABASE IF NOT EXISTS SDBMS;")
+cur.execute("USE SDBMS;")
+cur.execute("CREATE TABLE IF NOT EXISTS DATA(roll INT PRIMARY KEY, name VARCHAR(30), class INT, section CHAR(1), house VARCHAR(7));")
+
+
+
+def UpdateForm():
+    Upd = Tk()
+    Upd.geometry('500x400')
+    Upd.configure(bg = 'cornflower blue')
+    Upd.title('Update Record')
+    Upd.resizable(False, False)
+
+    Label(Upd, text = 'UPDATE RECORD', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=95, y=20)
+
+    Label(Upd, text = 'Roll Number', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=80, y=120)
+    n = StringVar()
+    T1 = Entry(Upd, fg = "black", bg = "white", textvariable = n, width = 14, font = ('bahnschrift semibold', 9)).place(x=320, y=133)
+
+    Label(Upd, text = 'Column', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=80, y=180)
+    col = StringVar()
+    T2 = ttk.Combobox(Upd, state = "readonly", textvariable = col, values = ['Name', 'Class', 'Section', 'House'], width = 11, font = ('bahnschrift semibold', 9)).place(x=320, y=193)
+
+    Label(Upd, text = 'New Value', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=80, y=240)
+    uv = StringVar()
+    T3 = Entry(Upd, fg = "black", bg = "white", textvariable = uv, width = 14, font = ('bahnschrift semibold', 9)).place(x=320, y=253)
+
+    def BACK():
+        Upd.destroy()
+        MenuForm()
+    Button(Upd, text = "Back", command = BACK, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=60, y=320)
+
+    def CLEAR():
+        n.set('')
+        col.set('')
+        uv.set('')
+    Button(Upd, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=192.5, y=320)
+
+    def VALIDATE():
+        cur.execute("SELECT roll FROM DATA;")
+        L = cur.fetchall()
+        H = []
+        for x in L:
+            H.append(str(x[0]))
+        if n.get() in H:
+            cur.execute(f"UPDATE DATA SET {col.get()} = {uv.get()} WHERE roll = {n.get()};")
+            myconn.commit()
+            messagebox.showinfo("Success", "Record Updated")
+            Upd.destroy()
+            MenuForm()
+        else:
+            messagebox.showinfo("Failed", "Invalid Roll Number")
+    Button(Upd, text = "Enter", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=325, y=320)
+
+
+
+def DisplayForm():
+    Dis = Tk()
+    Dis.geometry('700x500')
+    Dis.configure(bg = 'cornflower blue')
+    Dis.title('Display Records')
+    Dis.resizable(False, False)
+
+    Label(Dis, text = 'DISPLAY RECORDS', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=180, y=20)
+
+    style = ttk.Style()
+    style.theme_use('clam')
+    style.configure("Treeview", background = "white", foreground = "black", rowheight = 25, fieldbackground = "white")
+    style.map('Treeview', background = [('selected', 'cornflower blue')])
+
+    tree = ttk.Treeview(Dis, columns = ("roll", "name", "class", "section", "house"), show = 'headings', height = 12)
+
+    tree.heading("roll", text = "Roll No")
+    tree.heading("name", text = "Name")
+    tree.heading("class", text = "Class")
+    tree.heading("section", text = "Section")
+    tree.heading("house", text = "House")
+
+    tree.column("roll", anchor = CENTER, width = 80)
+    tree.column("name", anchor = W, width = 180)
+    tree.column("class", anchor = CENTER, width = 80)
+    tree.column("section", anchor = CENTER, width = 80)
+    tree.column("house", anchor = CENTER, width = 120)
+
+    cur.execute("SELECT * FROM DATA;")
+    data = cur.fetchall()
+    for row in data:
+        tree.insert('', 'end', values = row)
+
+    scroll = ttk.Scrollbar(Dis, orient="vertical", command = tree.yview)
+    tree.configure(yscrollcommand = scroll.set)
+    scroll.place(x=660, y=80, height = 331)
+
+    tree.place(x=75, y=80)
+
+    def BACK():
+        Dis.destroy()
+        MenuForm()
+
+    Button(Dis, text = "Back", command = BACK, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=300, y=430)
+
+
+
+def DeleteForm():
+    Del = Tk()
+    Del.geometry('500x300')
+    Del.configure(bg = 'cornflower blue')
+    Del.title('Delete Record')
+    Del.resizable(False,False)
+
+    Label(Del, text = 'DELETE RECORD', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=100, y=20)
+    Label(Del, text = 'Roll Number', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=80,y=120)
+    n = StringVar()
+    T = Entry(Del, fg = "black", bg = "white", textvariable = n, width = 10, font = ('bahnschrift semibold', 9)).place(x=320, y=133)
+
+    def BACK():
+        Del.destroy()
+        MenuForm()
+    Button(Del, text = "Back", command = BACK, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=60, y=220)
+
+    def CLEAR():
+        n.set('')
+    Button(Del, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=192.5, y=220)
+
+    def VALIDATE():
+        cur.execute("SELECT roll FROM DATA;")
+        L = cur.fetchall()
+        H = []
+        for x in L:
+            H.append(str(x[0]))
+        if n.get() in H:
+            confirm = messagebox.askyesno("Confirm Delete", f"Delete record with Roll No {n.get()}?")
+            if confirm:
+                cur.execute(f"DELETE FROM DATA WHERE roll = {n.get()};")
+                myconn.commit()
+                messagebox.showinfo("Success", "Record Deleted")
+                Del.destroy()
+                MenuForm()
+        else:
+            messagebox.showinfo("Failed", "Invalid Roll Number")
+    Button(Del, text = "Enter", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=325, y=220)
+
+
+
+def NewForm():
+    New = Tk()
+    New.geometry('500x500')
+    New.configure(bg = 'cornflower blue')
+    New.title('New Record')
+    New.resizable(False,False)
+
+    Label(New, text = 'NEW RECORD', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=120, y=20)
+    cur.execute("SELECT MAX(roll) FROM DATA")
+    result = cur.fetchone()
+    if result[0] is None:
+        nextroll = 101
+    else:
+        nextroll = result[0] + 1
+
+    rn = StringVar(value = str(nextroll))
+    nm = StringVar()
+    cl = StringVar()
+    sc = StringVar()
+    hs = StringVar()
+
+    Label(New, text='Roll Number', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=60,y=120)
+    T1 = Entry(New, fg = "white", bg = "gray26", textvariable = rn, state = "readonly", font = ('bahnschrift semibold', 9)).place(x=300, y=130)
+    Label(New, text='Name', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=60,y=170)
+    T2 = Entry(New, fg = "black", bg = "white", textvariable = nm, font = ('bahnschrift semibold', 9)).place(x=300, y=180)
+    Label(New, text = 'Class', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=60,y=220)
+    T3 = ttk.Combobox(New, state = "readonly", textvariable = cl, values = [1,2,3,4,5,6,7,8,9,10,11,12], width = 17, font = ('bahnschrift semibold', 9)).place(x=300,y=230)
+    Label(New, text = 'Section', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=60,y=270)
+    T4 = ttk.Combobox(New, state = "readonly", textvariable = sc, values = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"], width = 17, font = ('bahnschrift semibold', 9)).place(x=300,y=280)
+    Label(New, text = 'House', fg = 'black',bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=60,y=320)
+    T5 = ttk.Combobox(New, state = "readonly", textvariable = hs, values = ["RED","GREEN","BLUE","YELLOW"], width = 17, font = ('bahnschrift semibold', 9)).place(x=300,y=330)
+
+    def BACK():
+        New.destroy()
+        MenuForm()
+    Button(New, text = "Back", command = BACK, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=60, y=420)
+
+    def CLEAR():
+        nm.set('')
+        cl.set('')
+        sc.set('')
+        hs.set('')
+    Button(New, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=192.5, y=420)
+
+    def VALIDATE():
+        if rn.get() == "" or nm.get() == "" or cl.get() == "" or sc.get() == "" or hs.get() == "":
+            messagebox.showinfo("Failed", "Please try again")
+        else:
+            roll = int(rn.get())
+            name =  nm.get()
+            clas = int(cl.get())
+            sect = sc.get()
+            house = hs.get()
+            sql = "INSERT INTO DATA VALUES (%s,%s,%s,%s,%s);"
+            data = (roll,name,clas,sect,house)
+            cur.execute(sql,data)
+            myconn.commit()
+            messagebox.showinfo("Success","Record added")
+            New.destroy()
+            MenuForm()
+    Button(New, text = "Enter", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=325, y=420)
+
+
+
+def MenuForm():
+    Menu = Tk()
+    Menu.geometry('500x400')
+    Menu.configure(bg = 'cornflower blue')
+    Menu.title('Main Menu')
+    Menu.resizable(False,False)
+
+    Label(Menu, text = 'MAIN MENU', fg = 'black', bg = "cornflower blue", font = ('bahnschrift bold', 30)).place(x=140, y=50)
+
+    def New():
+        Menu.destroy()
+        NewForm()
+    def Display():
+        Menu.destroy()
+        DisplayForm()
+    def Update():
+        Menu.destroy()
+        UpdateForm()
+    def Delete():
+        Menu.destroy()
+        DeleteForm()
+
+    Button(Menu, text = "NEW", command = New, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 30).place(x=90, y=180)
+    Button(Menu, text = "DISPLAY", command = Display, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=290, y=180)
+    Button(Menu, text = "UPDATE", command = Update, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=90, y=280)
+    Button(Menu, text = "DELETE", command = Delete, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 18).place(x=290, y=280)
+    
+
+def LoginForm():
+    Myform = Tk()
+    Myform.geometry('400x300')
+    Myform.configure(bg = 'cornflower blue')
+    Myform.title('Login Form')
+    Myform.resizable(False, False)
+
+    Label(Myform, text = 'LOGIN', fg = 'black', bg = "cornflower blue", font = ('Bahnschrift bold', 30)).place(x=145, y=20)
+    Label(Myform, text = 'User Name', fg = 'black', bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=52, y=98)
+    Label(Myform, text = 'Password', fg = 'black', bg = "cornflower blue", font = ('bahnschrift semibold', 20)).place(x=52, y=148)
+
+    v1 = StringVar()
+    v2 = StringVar()
+    T1 = Entry(Myform, fg = "black", bg = "white", textvariable = v1, font = ('bahnschrift semibold', 10)).place(x=202, y=110)
+    T2 = Entry(Myform, fg = "black", bg = "white", textvariable = v2, show = "*",font = ('bahnschrift semibold', 10)).place(x=202, y=160)
+
+    Button(Myform, text = "Close", command = Myform.destroy, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=42, y=220)
+
+    def CLEAR():
+        v1.set('')
+        v2.set('')
+    Button(Myform, text = "Clear", command = CLEAR, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=152, y=220)
+
+    def VALIDATE():
+        if v1.get() == "abhiraj" and v2.get() == "1809":
+            Myform.destroy()
+            MenuForm()
+        else:
+            messagebox.showinfo("Login Failed", "Please try again")
+
+    Button(Myform, text = "Login", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=262, y=220)
+    
+
+
+def Main():
+    Main = Tk()
+    Main.geometry('700x600')
+    Main.configure(bg = 'cornflower blue')
+    Main.title('STUDENT MANAGEMENT SYSTEM')
+    Main.resizable(False, False)
+
+    Label(Main, text = 'DELHI PUBLIC SCHOOL PRAYAGRAJ', fg = 'black', bg = "cornflower blue", font = ('Times New Roman', 20)).place(x=120, y=50)
+    Label(Main, text = 'STUDENT MANAGEMENT SYSTEM', fg = 'black', bg = "cornflower blue", font = ('Bahnschrift bold', 30)).place(x=50, y=120)
+    Label(Main, text = 'By :- Abhiraj Mandal', fg = 'black', bg = "cornflower blue", font = ('Bahnschrift bold', 20)).place(x=225, y=400)
+
+    def LOGIN():
+        Main.destroy()
+        LoginForm()
+    Button(Main, text = "Start", command = LOGIN, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=300, y=500)
+
+    Main.mainloop()    
+    
+
+    
+Main()
+
+
+
+#end
