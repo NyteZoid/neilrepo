@@ -3,10 +3,8 @@
 
 
 from tkinter import *
-from tkinter import messagebox
-from tkinter import ttk
+from tkinter import messagebox, ttk
 import mysql.connector as sqlconn
-
 
 
 myconn = sqlconn.connect(
@@ -22,10 +20,10 @@ cur.execute("CREATE TABLE IF NOT EXISTS DATA(roll INT PRIMARY KEY, name VARCHAR(
 
 
 def SearchForm():
-    Ser = Tk()
+    Ser = Toplevel()
     Ser.geometry('500x300')
     Ser.configure(bg = 'cornflower blue')
-    Ser.title('Update Record')
+    Ser.title('Search Record')
     Ser.resizable(False, False)
 
     Label(Ser, text = 'SEARCH RECORD', fg = 'black', bg = 'cornflower blue', font = ('bahnschrift bold', 30)).place(x=90, y=20)
@@ -82,7 +80,7 @@ def SearchForm():
 
 
 def UpdateForm():
-    Upd = Tk()
+    Upd = Toplevel()
     Upd.geometry('500x400')
     Upd.configure(bg = 'cornflower blue')
     Upd.title('Update Record')
@@ -135,7 +133,7 @@ def UpdateForm():
 
 
 def DisplayForm():
-    Dis = Tk()
+    Dis = Toplevel()
     Dis.geometry('700x500')
     Dis.configure(bg = 'cornflower blue')
     Dis.title('Display Records')
@@ -182,7 +180,7 @@ def DisplayForm():
 
 
 def DeleteForm():
-    Del = Tk()
+    Del = Toplevel()
     Del.geometry('500x300')
     Del.configure(bg = 'cornflower blue')
     Del.title('Delete Record')
@@ -223,7 +221,7 @@ def DeleteForm():
 
 
 def NewForm():
-    New = Tk()
+    New = Toplevel()
     New.geometry('500x500')
     New.configure(bg = 'cornflower blue')
     New.title('New Record')
@@ -287,7 +285,7 @@ def NewForm():
 
 
 def MenuForm():
-    Menu = Tk()
+    Menu = Toplevel()
     Menu.geometry('500x500')
     Menu.configure(bg = 'cornflower blue')
     Menu.title('Main Menu')
@@ -311,7 +309,9 @@ def MenuForm():
         Menu.destroy()
         SearchForm()
     def Exit():
-        Menu.destroy()
+        confirm = messagebox.askyesno("Exit", "Are you sure you want to exit?")
+        if confirm:
+            Menu.destroy()
 
     Button(Menu, text = "NEW", command = New, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 30).place(x=90, y=180)
     Button(Menu, text = "DISPLAY", command = Display, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=290, y=180)
@@ -322,7 +322,7 @@ def MenuForm():
     
 
 def LoginForm():
-    Myform = Tk()
+    Myform = Toplevel()
     Myform.geometry('400x300')
     Myform.configure(bg = 'cornflower blue')
     Myform.title('Login Form')
@@ -349,7 +349,7 @@ def LoginForm():
             Myform.destroy()
             MenuForm()
         else:
-            messagebox.showinfo("Login Failed", "Please try again")
+            messagebox.showinfo("Access Denied", "Invalid Username or Password")
 
     Button(Myform, text = "Login", command = VALIDATE, border = 3, font = ("bahnschrift semibold", 15), bg = "gray67", fg = "black", padx = 15).place(x=262, y=220)
     
@@ -377,6 +377,6 @@ def Main():
     
 Main()
 
-
+myconn.close()
 
 #end
