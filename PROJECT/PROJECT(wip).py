@@ -10,7 +10,7 @@ import mysql.connector as sqlconn
 myconn = sqlconn.connect(
     host = "localhost",
     user = "root",
-    password = "1809")
+    password = "****")
 
 cur = myconn.cursor()
 cur.execute("CREATE DATABASE IF NOT EXISTS SDBMS;")
@@ -380,3 +380,4 @@ Main()
 myconn.close()
 
 #end
+
